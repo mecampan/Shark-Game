@@ -10,7 +10,9 @@ class Level_1 extends Phaser.Scene {
     create() {
         this.timeCounter = 0;
 
-        this.background = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, "background").setOrigin(0, 0).setDepth(-1);
+        this.background = this.add.tileSprite(0, 0, this.scale.width, this.scale.height, "background")
+            .setOrigin(0, 0)
+            .setDepth(-1);
 
         this.map = this.add.tilemap("platformer-level-1");
         this.tileset = this.map.addTilesetImage("kenny_tilemap_packed", "tilemap_tiles");
