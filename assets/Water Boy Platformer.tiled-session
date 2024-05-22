@@ -3,8 +3,9 @@
         "height": 4300,
         "width": 2
     },
-    "activeFile": "",
+    "activeFile": "platformer-level-1.tmx",
     "expandedProjectPaths": [
+        "."
     ],
     "fileStates": {
         "": {
@@ -31,11 +32,11 @@
                 6,
                 4
             ],
-            "scale": 2,
-            "selectedLayer": 4,
+            "scale": 0.5,
+            "selectedLayer": 2,
             "viewCenter": {
-                "x": 165.75,
-                "y": 282.75
+                "x": 967,
+                "y": 269
             }
         },
         "platformer-level-1.tmx#kenny_tilemap_packed": {
@@ -52,12 +53,13 @@
     "map.tileWidth": 16,
     "map.width": 160,
     "openFiles": [
+        "platformer-level-1.tmx"
     ],
     "project": "Water Boy Platformer.tiled-project",
     "property.type": "int",
     "recentFiles": [
-        "platformer-level-1.tmj",
-        "platformer-level-1.tmx"
+        "platformer-level-1.tmx",
+        "platformer-level-1.tmj"
     ],
     "resizeMap.removeObjects": true,
     "textEdit.monospace": true,

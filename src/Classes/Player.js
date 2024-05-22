@@ -10,23 +10,30 @@ class Player {
         this.VELOCITY = 150;
         this.DRAG = 1500;
 
-        this.health = 3;
-
+        this.walkCounter = 0;
         this.cursors = scene.input.keyboard.createCursorKeys();
-
-        // Add splash sound effect to player
         this.splashSound = this.scene.sound.add('splash');
+        this.jumpSound = this.scene.sound.add('jump');
+        this.walkingSound = this.scene.sound.add('walking');
     }
 
     update() {
+        this.walkCounter++;
+
         if (this.cursors.left.isDown) {
             this.sprite.body.setVelocityX(-this.VELOCITY);
             this.sprite.setFlipX(false);
             this.sprite.anims.play('walk', true);
+            if(this.walkCounter % 20 == 0 && this.sprite.body.blocked.down){
+                this.walkingSound.play();
+            }
         } else if (this.cursors.right.isDown) {
             this.sprite.body.setVelocityX(this.VELOCITY);
             this.sprite.setFlipX(true);
             this.sprite.anims.play('walk', true);
+            if(this.walkCounter % 20 == 0 && this.sprite.body.blocked.down){
+                this.walkingSound.play();
+            }
         } else {
             this.sprite.body.setAccelerationX(0);
             this.sprite.body.setDragX(this.DRAG);
@@ -38,16 +45,12 @@ class Player {
         }
         if (this.sprite.body.blocked.down && Phaser.Input.Keyboard.JustDown(this.cursors.up)) {
             this.sprite.body.setVelocityY(this.JUMP_VELOCITY);
+            this.jumpSound.play();
         }
     }
 
     respawn(spawnPoint, desu) {
-        // Play splash sound effect
-        if (this.splashSound) {
-            this.splashSound.play();
-        } else {
-            console.error('Splash sound not loaded');
-        }
+        this.splashSound.play();
 
         // Prevent the player from moving during respawn
         this.sprite.body.setAllowGravity(false);

@@ -4,6 +4,8 @@ class Switches {
         this.switches = this.scene.physics.add.group();
         this.currentSwitch = null;
         this.dropPlatformsActivated = false; // Flag to check if drop platforms have been activated
+
+        this.switchSound = this.scene.sound.add('switch');
     }
 
     initializeSwitches(objectsLayer) {
@@ -40,6 +42,8 @@ class Switches {
         if (this.isPuzzleSolved()) {
             return; // Do nothing if the puzzle is solved
         }
+
+        this.switchSound.play();
 
         // Toggle the tile index
         const tileIndex = switchSprite.frame.name === 64 ? 66 : 64;

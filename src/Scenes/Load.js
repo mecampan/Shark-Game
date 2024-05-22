@@ -31,6 +31,11 @@ class Load extends Phaser.Scene {
         // Load background music
         this.load.audio('backgroundMusic', 'Ethernight_Club.ogg');
         this.load.audio('splash', 'splash.ogg');
+        this.load.audio('switch', 'switch.ogg');
+        this.load.audio('jump', 'jumpSFX.ogg');
+        this.load.audio('walking', 'footstep.ogg');
+        this.load.audio('pickup', 'pickup.ogg');
+        this.load.audio('unlock', 'unlock.ogg');
     }
 
     create() {

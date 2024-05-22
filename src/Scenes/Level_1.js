@@ -103,6 +103,9 @@ class Level_1 extends Phaser.Scene {
         this.keys = this.physics.add.group();
         this.locks = this.physics.add.group();
 
+        this.pickupSound = this.sound.add('pickup');
+        this.unlockSound = this.sound.add('unlock');
+
         objectsLayer.objects.forEach(obj => {
             if (obj.name === 'key') {
                 const key = this.keys.create(obj.x + 18, obj.y, 'tilemap_sheet', 27).setOrigin(0, 0).setAngle(90).setDepth(4);
@@ -249,6 +252,9 @@ class Level_1 extends Phaser.Scene {
         key.setData('following', true);
         key.body.setAllowGravity(false);
         key.body.setImmovable(true);
+        if(player.body.blocked.down) {
+            this.pickupSound.play();
+        }
     }
 
     unlockPipe(player, lock) {
@@ -258,6 +264,7 @@ class Level_1 extends Phaser.Scene {
             this.warpPipeHandler.activatePipe(pipeTarget);
             key.destroy();
             lock.destroy();
+            this.unlockSound.play();
         }
     }
 
