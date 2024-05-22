@@ -24,8 +24,6 @@ class WarpPipe {
                 this.warpAble = obj.properties.find(prop => prop.name === 'warpAble')?.value !== undefined ? obj.properties.find(prop => prop.name === 'warpAble').value : true;
                 this.pipeTarget = obj.properties.find(prop => prop.name === 'pipeTarget')?.value || null;
 
-                //console.log(`Initializing Pipe: ID=${this.pipeID}, Target=${this.target}, WarpAble=${this.warpAble}, PipeTarget=${this.pipeTarget}`);
-
                 if (this.pipeID && this.target) {
                     const pipe = this.pipes.create(obj.x - 7, obj.y - 7, null).setSize(obj.width, obj.height);
                     pipe.setData('pipeID', this.pipeID);
@@ -36,8 +34,6 @@ class WarpPipe {
                     pipe.body.setAllowGravity(false);
                     pipe.body.setImmovable(true);
                     pipe.visible = false; // Make the pipe invisible
-
-                    //console.log(`Initialized Pipe - ID: ${pipe.getData('pipeID')}, Target: ${pipe.getData('target')}, PipeTarget: ${pipe.getData('pipeTarget')}, WarpAble: ${pipe.getData('warpAble')}`);
                 }
             }
         });
@@ -49,20 +45,13 @@ class WarpPipe {
     }
 
     handleWarp(playerSprite, pipe) {
-        //console.log("Warp attempt:");
-        //console.log(`Current Pipe WarpAble: ${pipe.getData('warpAble')}`);
 
         if (this.canWarp && pipe.getData('warpAble')) {
             const targetPipe = this.pipes.getChildren().find(p => p.getData('pipeID') === pipe.getData('target'));
 
-            //console.log("Checking target pipe...");
-            //console.log(`Target Pipe Exists: ${!!targetPipe}`);
-
             if (targetPipe) {
-                //console.log(`Target Pipe WarpAble: ${targetPipe.getData('warpAble')}`);
 
                 if (targetPipe.getData('warpAble')) {
-                    //console.log("Warping player...");
                     playerSprite.setPosition(targetPipe.x + 14, targetPipe.y + 14);
                     this.canWarp = false; // Prevent continuous triggering
                     this.scene.time.delayedCall(1000, () => { this.canWarp = true; }); // Re-enable warp after delay
@@ -78,12 +67,10 @@ class WarpPipe {
     }
 
     activatePipe(pipeTarget) {
-        //console.log(`Activating pipes with PipeTarget: ${pipeTarget}`);
 
         this.pipes.getChildren().forEach(pipe => {
             if (pipe.getData('pipeTarget') == pipeTarget) {
                 pipe.setData('warpAble', true);
-                //console.log(`Pipe ID: ${pipe.getData('pipeID')} set to warpAble: ${pipe.getData('warpAble')}`);
             }
         });
     }

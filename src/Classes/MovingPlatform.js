@@ -44,7 +44,6 @@ class MovingPlatform {
 
     startMoving(platform) {
 
-        console.log('moving: ', platform.moving);
         if (!platform.moving) {
             platform.moving = true;
 

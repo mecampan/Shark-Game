@@ -8,7 +8,11 @@ class Level_1 extends Phaser.Scene {
     }
 
     create() {
-        this.timeCounter = 0;
+        this.startTime = this.time.now;
+        this.timeText = this.add.text(10, 10, 'Time: 0:0:0:0\n\n', {
+            fontSize: '24px',
+            fill: '#ffffff'
+        }).setScrollFactor(0).setDepth(5);
 
         this.map = this.add.tilemap("platformer-level-1");
         this.tileset = this.map.addTilesetImage("kenny_tilemap_packed", "tilemap_tiles");
@@ -51,7 +55,6 @@ class Level_1 extends Phaser.Scene {
         this.waterFallTrap = this.physics.add.group();
         objectsLayer.objects.forEach(obj => {
 
-            //console.log(obj.name);
             if (obj.name === 'waterfall') {
                 const waterfall = this.waterFallTrap.create(obj.x, obj.y - 18, 'tilemap_sheet', 54).setOrigin(0, 0).setDepth(4);
                 waterfall.properties = obj.properties;
@@ -93,7 +96,6 @@ class Level_1 extends Phaser.Scene {
 
         // Call the waterfall cascade function
         this.updateWaterfallVisibility();
-
 
         // Initialize keys and locks
         this.keys = this.physics.add.group();
@@ -188,8 +190,9 @@ class Level_1 extends Phaser.Scene {
                 this.switches.handleSwitch(this.switches.currentSwitch);
             }
         });
-
+        
         this.physics.world.drawDebug = !this.physics.world.drawDebug;
+        /*
         this.input.keyboard.on('keydown-D', () => {
             this.physics.world.drawDebug = !this.physics.world.drawDebug;
             this.physics.world.debugGraphic.clear();
@@ -202,6 +205,7 @@ class Level_1 extends Phaser.Scene {
         this.input.keyboard.on('keydown-S', () => {
             this.player.playerStatus();
         });
+        */
 
         // Overlap for keys
         this.physics.add.overlap(this.player.sprite, this.keys, this.collectKey, null, this);
@@ -239,7 +243,6 @@ class Level_1 extends Phaser.Scene {
         const key = this.keys.getChildren().find(key => key.getData('following') && key.getData('lockTarget') === lock.getData('lockTarget'));
         if (key) {
             const pipeTarget = lock.getData('pipeTarget');
-            console.log(`Unlocking pipe for pipeTarget: ${pipeTarget}`);
             this.warpPipeHandler.activatePipe(pipeTarget);
             key.destroy();
             lock.destroy();
@@ -297,31 +300,33 @@ class Level_1 extends Phaser.Scene {
     }
 
     handleWinCondition(player, endPoint) {
-        // Access the JSON data
+        const elapsedTime = this.time.now - this.startTime;
+    
+        const totalSeconds = Math.floor(elapsedTime / 1000);
+        const milliseconds = (elapsedTime % 1000).toFixed(0); // Shorten milliseconds
+        const seconds = totalSeconds % 60;
+        const minutes = Math.floor(totalSeconds / 60) % 60;
+        const hours = Math.floor(totalSeconds / 3600);
+    
+        const timeText = `Time: ${hours}h ${minutes}m ${seconds}s ${milliseconds}ms\n\n`;
+    
         const winText = this.cache.json.get('gameText').gameWin;
-
-        // Display winning text
-        const winningText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, winText, {
-            fontSize: '24px', // Adjusted font size for better readability
+    
+        const winningText = this.add.text(this.cameras.main.centerX, this.cameras.main.centerY, timeText + winText, {
+            fontSize: '24px',
             fill: '#ffffff',
-            stroke: '#000000', // Adding stroke to make the text stand out
+            stroke: '#000000',
             strokeThickness: 3
         }).setOrigin(0.5).setDepth(5).setScrollFactor(0);
-
-        // Stop player movement
+    
         this.player.sprite.body.enable = false;
-
-        // Wait for space bar press to restart the level
+    
         this.input.keyboard.once('keydown-SPACE', () => {
             this.scene.restart();
         });
-    }
+    }    
 
     update() {
-
-        // Increase time to act like a score. Lower time is a better score
-        this.timeCounter++;
-
         this.player.update();
 
         // Update MovingPlatforms
@@ -349,5 +354,13 @@ class Level_1 extends Phaser.Scene {
                 key.y = this.player.sprite.y - 32; // Adjust height as needed
             }
         });
+
+        // Update the timer
+        const elapsedTime = this.time.now - this.startTime;
+        const hours = Math.floor(elapsedTime / 3600000);
+        const minutes = Math.floor((elapsedTime % 3600000) / 60000);
+        const seconds = Math.floor((elapsedTime % 60000) / 1000);
+        const milliseconds = elapsedTime % 1000;
+        this.timeText.setText(`Time: ${hours}:${minutes}:${seconds}:${milliseconds}`);
     }
 }

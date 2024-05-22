@@ -38,7 +38,6 @@ class Switches {
     handleSwitch(switchSprite) {
         // Check if the puzzle is solved before toggling
         if (this.isPuzzleSolved()) {
-            console.log('Puzzle is solved, switch will not toggle.');
             return; // Do nothing if the puzzle is solved
         }
 
@@ -73,23 +72,17 @@ class Switches {
         const waterObjects = this.scene.waters.waterGroup.getChildren();
         const toBeDestroyed = [];
 
-        console.log('Toggling water for targets:', waterTargets);
-
         // First, toggle the visibility of all target water objects
         waterObjects.forEach(waterObject => {
             if (waterObject.properties) {
                 const waterIDProperty = waterObject.properties.find(prop => prop.name === 'waterTarget');
                 if (waterIDProperty && waterTargets.includes(waterIDProperty.value)) {
-                    console.log('Before Toggle - Water ID:', waterIDProperty.value, 'Visible:', waterObject.visible);
 
                     // Toggle visibility
                     waterObject.visible = !waterObject.visible;
 
-                    console.log('After Toggle - Water ID:', waterIDProperty.value, 'Visible:', waterObject.visible);
-
                     // Destroy water objects with waterTarget 1 or 9 if they are no longer visible
                     if (!waterObject.visible && (waterIDProperty.value == 1 || waterIDProperty.value == 9)) {
-                        console.log('Destroying Water ID:', waterIDProperty.value);
                         toBeDestroyed.push(waterObject);
                     }
                 }
@@ -98,7 +91,6 @@ class Switches {
 
         // Now destroy the marked objects
         toBeDestroyed.forEach(waterObject => {
-            console.log('Destroying Water ID:', waterObject.properties.find(prop => prop.name === 'waterTarget').value);
             waterObject.destroy();
         });
 
@@ -111,15 +103,12 @@ class Switches {
             return true;
         });
 
-        console.log('Puzzle Check:', checkPuzzle);
-
         // If the puzzle is solved, destroy water objects with waterTarget 2-8
         if (checkPuzzle) {
             const puzzleObjectsToDestroy = [];
             waterObjects.forEach(waterObject => {
                 const waterIDProperty = waterObject.properties?.find(prop => prop.name === 'waterTarget');
                 if (waterIDProperty && waterIDProperty.value >= 2 && waterIDProperty.value <= 8) {
-                    console.log('Destroying Water ID (Puzzle Solved):', waterIDProperty.value);
                     puzzleObjectsToDestroy.push(waterObject);
                 }
             });

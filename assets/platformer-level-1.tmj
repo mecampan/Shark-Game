@@ -6214,18 +6214,6 @@
                 {
                  "gid":147,
                  "height":18,
-                 "id":223,
-                 "name":"fallingBlockA",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":18,
-                 "x":1476,
-                 "y":270
-                }, 
-                {
-                 "gid":147,
-                 "height":18,
                  "id":224,
                  "name":"fallingBlockA",
                  "rotation":0,
@@ -6280,7 +6268,7 @@
                  "type":"",
                  "visible":true,
                  "width":18,
-                 "x":1386,
+                 "x":1350,
                  "y":234
                 }, 
                 {
@@ -6370,25 +6358,13 @@
                 {
                  "gid":147,
                  "height":18,
-                 "id":237,
-                 "name":"fallingBlockA",
-                 "rotation":0,
-                 "type":"",
-                 "visible":true,
-                 "width":18,
-                 "x":1512,
-                 "y":342
-                }, 
-                {
-                 "gid":147,
-                 "height":18,
                  "id":239,
                  "name":"fallingBlockA",
                  "rotation":0,
                  "type":"",
                  "visible":true,
                  "width":18,
-                 "x":1512,
+                 "x":1422,
                  "y":198
                 }, 
                 {
@@ -6726,6 +6702,66 @@
                  "width":18,
                  "x":504,
                  "y":342
+                }, 
+                {
+                 "gid":147,
+                 "height":18,
+                 "id":844,
+                 "name":"fallingBlockA",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":18,
+                 "x":1386,
+                 "y":270
+                }, 
+                {
+                 "gid":147,
+                 "height":18,
+                 "id":846,
+                 "name":"fallingBlockA",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":18,
+                 "x":1332,
+                 "y":234
+                }, 
+                {
+                 "gid":147,
+                 "height":18,
+                 "id":847,
+                 "name":"fallingBlockA",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":18,
+                 "x":1512,
+                 "y":162
+                }, 
+                {
+                 "gid":147,
+                 "height":18,
+                 "id":849,
+                 "name":"fallingBlockA",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":18,
+                 "x":1404,
+                 "y":198
+                }, 
+                {
+                 "gid":147,
+                 "height":18,
+                 "id":850,
+                 "name":"fallingBlockA",
+                 "rotation":0,
+                 "type":"",
+                 "visible":true,
+                 "width":18,
+                 "x":1512,
+                 "y":306
                 }],
          "opacity":1,
          "type":"objectgroup",
@@ -6775,7 +6811,7 @@
          "y":0
         }],
  "nextlayerid":11,
- "nextobjectid":844,
+ "nextobjectid":851,
  "orientation":"orthogonal",
  "renderorder":"right-down",
  "tiledversion":"1.10.2",
