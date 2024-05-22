@@ -1,0 +1,6 @@
+{
+    "pipeInfo": "Press SPACE to move through the pipes and make your way to the end.",
+    "pipeInfo2": "Some pipes need to be activated by a switch first to use.",
+    "switchInfo": "Press SPACE to activate switches to help progress through the water station.",
+    "gameWin" : "Congratulations! \n\nPress SPACE to restart."
+  }
