@@ -5,6 +5,7 @@ class Level_1 extends Phaser.Scene {
 
     init() {
         this.SCALE = 2.0;
+        this.PARTICLE_VELOCITY = 50;
     }
 
     create() {
@@ -48,6 +49,7 @@ class Level_1 extends Phaser.Scene {
                 checkpointSprite.setOrigin(0, 0);
                 checkpointSprite.body.setAllowGravity(false);
                 checkpointSprite.body.setImmovable(true);
+                checkpointSprite.anims.play('flag');
             }
         });
 
@@ -140,10 +142,6 @@ class Level_1 extends Phaser.Scene {
 
         this.player = new Player(this, this.spawnPoint.x, this.spawnPoint.y, "platformer_characters", "tile_0000.png");
         this.player.sprite.setDepth(3); // Set player sprite depth here
-        this.physics.add.collider(this.player.sprite, this.groundLayer, this.handleDangerTileCollision, null, this);
-        this.physics.add.collider(this.player.sprite, this.dropPlatforms);
-        this.physics.add.overlap(this.player.sprite, this.endPoint, this.handleWinCondition, null, this);
-        this.physics.add.overlap(this.player.sprite, this.waterFallTrap, this.handleWaterFallCollision, null, this);
 
         // Initialize WarpPipes
         this.warpPipeHandler = new WarpPipe(this);
@@ -207,11 +205,17 @@ class Level_1 extends Phaser.Scene {
         });
         */
 
-        // Overlap for keys
-        this.physics.add.overlap(this.player.sprite, this.keys, this.collectKey, null, this);
-
-        // Overlap for locks
-        this.physics.add.overlap(this.player.sprite, this.locks, this.unlockPipe, null, this);
+        // Create water splash particle effect
+        my.vfx.waterSplash = this.add.particles(0, 0, "kenny-particles", {
+            frame: ['muzzle_02.png', 'muzzle_03.png'],
+            random: true,
+            scale: { start: 0.2, end: 0.1 },
+            maxAliveParticles: 8,
+            lifespan: 350,
+            gravityY: -500,
+            alpha: { start: 1, end: 0.1 }
+        });
+        my.vfx.waterSplash.stop();
 
         // Add collider for tiles with danger property
         this.groundLayer.forEachTile(tile => {
@@ -219,6 +223,14 @@ class Level_1 extends Phaser.Scene {
                 this.physics.add.collider(this.player.sprite, tile, this.handleDangerTileCollision, null, this);
             }
         });
+
+        // Should I have just used one?
+        this.physics.add.collider(this.player.sprite, this.groundLayer, this.handleDangerTileCollision, null, this);
+        this.physics.add.collider(this.player.sprite, this.dropPlatforms);
+        this.physics.add.overlap(this.player.sprite, this.endPoint, this.handleWinCondition, null, this);
+        this.physics.add.overlap(this.player.sprite, this.waterFallTrap, this.handleWaterFallCollision, null, this);
+        this.physics.add.overlap(this.player.sprite, this.keys, this.collectKey, null, this);
+        this.physics.add.overlap(this.player.sprite, this.locks, this.unlockPipe, null, this);
     }
 
     handleDangerTileCollision(playerSprite, tileOrObject) {
@@ -281,6 +293,26 @@ class Level_1 extends Phaser.Scene {
         });
     }
 
+    handleCameraSlowFollow() {
+        // Temporarily slow down the camera follow speed
+        this.cameras.main.stopFollow();
+        this.tweens.add({
+            targets: this.cameras.main,
+            scrollX: this.player.sprite.x - this.cameras.main.width / 2,
+            scrollY: this.player.sprite.y - this.cameras.main.height / 2,
+            duration: 1000,
+            ease: 'Sine.easeOut',
+            onComplete: () => {
+                // Restore the normal camera follow speed
+                this.cameras.main.startFollow(this.player.sprite, true, 0.25, 0.25);
+            }
+        });
+    }
+
+    splashVFX(posX, posY) {
+        my.vfx.waterSplash.emitParticleAt(posX, posY - 15, 10);
+    }
+
     updateWaterfallVisibility() {
         const waterFalls = this.waterFallTrap.getChildren();
 
@@ -295,7 +327,7 @@ class Level_1 extends Phaser.Scene {
 
     handleWaterFallCollision(player, waterfall) {
         if (waterfall.visible) {
-            this.player.respawn(this.spawnPoint);
+            this.player.respawn(this.spawnPoint, true);
         }
     }
 

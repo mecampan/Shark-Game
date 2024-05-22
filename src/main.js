@@ -4,7 +4,6 @@
 //
 // Water Boy
 //
-// 
 // Art assets from Kenny Assets "Shape Characters" set:
 // https://kenney.nl/assets/shape-characters
 //
@@ -13,7 +12,11 @@
 //
 // Art background from OpenGameArt.Org
 // https://opengameart.org/content/industrial-background-2d
-
+//
+// Music Attribution:
+// "Ethernight Club" Kevin MacLeod (incompetech.com)
+// Licensed under Creative Commons: By Attribution 4.0 License
+// http://creativecommons.org/licenses/by/4.0/  
 // debug with extreme prejudice
 "use strict"
 
@@ -42,6 +45,6 @@ let config = {
 
 var cursors;
 const SCALE = 2.0;
-var my = {sprite: {}, text: {}};
+var my = { sprite: {}, text: {}, vfx: {} };
 
 const game = new Phaser.Game(config);

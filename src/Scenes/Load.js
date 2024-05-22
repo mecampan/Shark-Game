@@ -22,11 +22,15 @@ class Load extends Phaser.Scene {
         // Load background image
         this.load.image("background", "industrial_background.jpg")
 
+        // Load particles
+        this.load.multiatlas("kenny-particles", "kenny-particles.json");
+
         // Load messages JSON file
         this.load.json("gameText", "gameText.json");
 
         // Load background music
         this.load.audio('backgroundMusic', 'Ethernight_Club.ogg');
+        this.load.audio('splash', 'splash.ogg');
     }
 
     create() {
@@ -62,6 +66,13 @@ class Load extends Phaser.Scene {
             frames: [
                 { frame: "tile_0001.png" }
             ],
+        });
+
+        this.anims.create({
+            key: 'flag',
+            frames: this.anims.generateFrameNumbers('tilemap_sheet', { frames: [111, 112] }),
+            frameRate: 5,
+            repeat: -1
         });
 
         this.anims.create({
