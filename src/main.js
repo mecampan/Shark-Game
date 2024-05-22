@@ -1,13 +1,18 @@
-// Jim Whitehead
-// Created: 4/14/2024
+// Michael Campanile
+// Created: 5/10/2024
 // Phaser: 3.70.0
 //
-// Cubey
+// Water Boy
 //
-// An example of putting sprites on the screen using Phaser
 // 
 // Art assets from Kenny Assets "Shape Characters" set:
 // https://kenney.nl/assets/shape-characters
+//
+// Art assets from Kenny Assets "Pixel Platformer" set:
+// https://kenney.nl/assets/pixel-platformer
+//
+// Art background from OpenGameArt.Org
+// https://opengameart.org/content/industrial-background-2d
 
 // debug with extreme prejudice
 "use strict"
