@@ -24,9 +24,16 @@ class Load extends Phaser.Scene {
 
         // Load messages JSON file
         this.load.json("gameText", "gameText.json");
+
+        // Load background music
+        this.load.audio('backgroundMusic', 'Ethernight_Club.ogg');
     }
 
     create() {
+        // Play the background music and set it to loop
+        this.backgroundMusic = this.sound.add('backgroundMusic', { loop: true });
+        this.backgroundMusic.play();
+
         this.anims.create({
             key: 'walk',
             frames: this.anims.generateFrameNames('platformer_characters', {
@@ -63,27 +70,27 @@ class Load extends Phaser.Scene {
             frameRate: 5,
             repeat: -1
         });
-        
+
         this.anims.create({
             key: 'waterfallMotion',
             frames: this.anims.generateFrameNumbers('tilemap_sheet', { frames: [54, 55] }),
             frameRate: 10,
             repeat: -1
         });
-        
+
         this.anims.create({
             key: 'waterfallTopMotion',
             frames: this.anims.generateFrameNumbers('tilemap_sheet', { frames: [34, 35] }),
             frameRate: 10,
             repeat: -1
         });
-        
+
         this.anims.create({
             key: 'waterfallBottomMotion',
             frames: this.anims.generateFrameNumbers('tilemap_sheet', { frames: [74, 75] }),
             frameRate: 10,
             repeat: -1
-        });        
+        });
 
         // ...and pass to the next Scene
         this.scene.start("level1Scene");
