@@ -7,16 +7,10 @@
 // Art assets from Kenny Assets "Shape Characters" set:
 // https://kenney.nl/assets/shape-characters
 //
-// Art assets from Kenny Assets "Pixel Platformer" set:
-// https://kenney.nl/assets/pixel-platformer
-//
 // Art background from OpenGameArt.Org
 // https://opengameart.org/content/industrial-background-2d
 //
 // Music Attribution:
-// "Ethernight Club" Kevin MacLeod (incompetech.com)
-// Licensed under Creative Commons: By Attribution 4.0 License
-// http://creativecommons.org/licenses/by/4.0/  
 // debug with extreme prejudice
 "use strict"
 
@@ -25,7 +19,7 @@ let config = {
     parent: 'phaser-game',
     type: Phaser.CANVAS,
     render: {
-        pixelArt: true  // prevent pixel art from getting blurred when scaled
+        pixelArt: false  // prevent pixel art from getting blurred when scaled
     },
     physics: {
         default: 'arcade',
@@ -38,9 +32,9 @@ let config = {
             }
         }
     },
-    width: 1440,
-    height: 900,
-    scene: [Load, Level_1]
+    width: 1000,
+    height: 600,
+    scene: [Load, MainScene]
 }
 
 var cursors;
