@@ -7,6 +7,8 @@
 // Art assets from Kenny Assets "Shape Characters" set:
 // https://kenney.nl/assets/shape-characters
 //
+// https://sergeant-slash.itch.io/32x32-animated-shark-sprite
+//
 // Art background from OpenGameArt.Org
 // https://opengameart.org/content/industrial-background-2d
 //
