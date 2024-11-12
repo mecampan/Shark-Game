@@ -22,6 +22,9 @@ class Load extends Phaser.Scene {
         this.load.image("shark7", "sharkSprite/Shark7.png");
         this.load.image("shark8", "sharkSprite/Shark8.png");
 
+        this.load.audio("splash1", "splash2.ogg");
+        this.load.audio("splash2", "splash3.ogg");
+
     }
 
     create() {

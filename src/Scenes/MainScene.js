@@ -28,24 +28,20 @@ class MainScene extends Phaser.Scene {
 
         // Instantiate the player
         this.player = new Player(this, 500, 500, "shark1");
-        document.getElementById('description').innerHTML = '<h1>Controls</h2><br>WASD or Arrow Keys to Move<br>SPACE: Boost';
-
+        document.getElementById('description').innerHTML = '<h1>Controls</h2><br>WASD or Arrow Keys to Move<br>ENTER: Boost<br>SPACE: Chomp';
+        
         // Create a blue rectangle for the water area
         this.waterArea = this.add.rectangle(0, this.game.config.height, this.game.config.width * 2, this.game.config.height, 0x0000ff).setAlpha(0.3);
         this.physics.add.existing(this.waterArea, true); // Static body
 
         // Array to store multiple enemy birds
         this.enemies = [];
-        for (let i = 0; i < 10; i++) {  // Adjust the number of enemies as needed
-            let bird = this.add.rectangle(
-                Phaser.Math.Between(50, this.game.config.width - 100),
-                Phaser.Math.Between(50, this.game.config.height - 350),
-                10, 10, 0xffffff
-            );
-            bird.points = 100;  // Points awarded for chomping this bird
-            this.physics.add.existing(bird, true);
-            this.enemies.push(bird); 
-        }
+        
+        // Set initial spawn properties
+        this.maxEnemies = 20;
+        this.enemySpawnDelay = 3000;  // Initial delay between spawns
+        this.minimumSpawnDelay = 500; // Minimum delay between spawns
+        this.spawnTimer = this.time.addEvent({ delay: this.enemySpawnDelay, callback: this.spawnEnemy, callbackScope: this, loop: true });
 
         // Set up overlap detection to detect when player enters water
         this.physics.add.overlap(this.player.sprite, this.waterArea, () => {
@@ -53,11 +49,14 @@ class MainScene extends Phaser.Scene {
                 this.player.playerInWater(true);
             }
         });
+
+        // Set up chomp action on spacebar press
+        this.input.keyboard.on('keydown-SPACE', () => {
+            this.checkEnemyCollisions();  // Check for collisions with spacebar press
+        });
     }
 
     updateScore(points) {
-        console.log("Player touching the bird");
-
         this.playerScore += (points * this.scoreMultiplier);
         this.scoreText.setText(`Score: ${this.playerScore.toString().padStart(8, '0')}`);
         this.scoreMultiplier += 1;
@@ -69,42 +68,88 @@ class MainScene extends Phaser.Scene {
         });
     }
 
+    spawnEnemy() {
+        if (this.enemies.length >= this.maxEnemies) return; // Limit the number of enemies on screen
+
+        const spawnOnLeft = Phaser.Math.Between(0, 1) === 0;
+        const x = spawnOnLeft ? -50 : this.game.config.width + 50;
+        const y = Phaser.Math.Between(50, this.game.config.height - 350);
+
+        let bird = this.add.rectangle(x, y, 10, 10, 0xffffff);
+        bird.points = 100;
+        const speed = Phaser.Math.Between(50, 200);
+        bird.speed = spawnOnLeft ? speed : -speed;
+
+        this.physics.add.existing(bird);
+        bird.body.setVelocityX(bird.speed);
+
+        this.enemies.push(bird);
+
+        if (this.enemySpawnDelay > this.minimumSpawnDelay) {
+            this.enemySpawnDelay -= 50;
+            this.spawnTimer.reset({ delay: this.enemySpawnDelay, callback: this.spawnEnemy, callbackScope: this, loop: true });
+        }
+    }
+
     checkEnemyCollisions() {
         // Check for collisions between player and each enemy
         for (let i = 0; i < this.enemies.length; i++) {
             let enemy = this.enemies[i];
-            if (this.collides(this.player.sprite, enemy)) {
-                // Update score and handle enemy deletion or repositioning
+            if (this.collides(this.player.sprite, enemy) && this.player.attemptChomp(enemy)) {
                 this.updateScore(enemy.points);
-                
-                // Remove the enemy from the scene and array
                 enemy.destroy();
-                this.enemies.splice(i, 1); // Remove enemy from array
-                i--; // Adjust index to account for removed element
+                this.enemies.splice(i, 1);
+                i--;
             }
         }
     }
 
-    // A center-radius AABB collision check
+    removeOffScreenEnemies() {
+        for (let i = 0; i < this.enemies.length; i++) {
+            const enemy = this.enemies[i];
+            const isOffScreenRight = enemy.x > this.game.config.width + 100;
+            const isOffScreenLeft = enemy.x < -100;
+
+            if (isOffScreenRight || isOffScreenLeft) {
+                enemy.destroy();
+                this.enemies.splice(i, 1);
+                i--;
+            }
+        }
+    }
+
     collides(a, b) {
         if (Math.abs(a.x - b.x) > (a.displayWidth / 2 + b.displayWidth / 2)) return false;
         if (Math.abs(a.y - b.y) > (a.displayHeight / 2 + b.displayHeight / 2)) return false;
         return true;
     }
 
+    playerScreenWrap(){
+        // Custom X-axis wrap
+        if (this.player.sprite.x < 0) {
+            this.player.sprite.x = this.game.config.width;
+        } else if (this.player.sprite.x > this.game.config.width) {
+            this.player.sprite.x = 0;
+        }
+
+        // Y-axis clamping to prevent going through the ground
+        const minY = 0;  // Adjust if you have a higher "ground" level
+        const maxY = this.game.config.height - 10;
+        this.player.sprite.y = Phaser.Math.Clamp(this.player.sprite.y, minY, maxY);
+    }
+
     update() {
-        // Check if the player has left the water area by comparing positions
         const playerBounds = this.player.sprite.getBounds();
         const waterBounds = this.waterArea.getBounds();
 
+        this.playerScreenWrap();
+
         if (!Phaser.Geom.Intersects.RectangleToRectangle(playerBounds, waterBounds) && this.player.inWater) {
             this.player.playerInWater(false);
+            this.player.turboJump();
         }
 
-        // Handle enemy collisions
-        this.checkEnemyCollisions();
-
-        // Update player
+        this.removeOffScreenEnemies();
         this.player.update();
     }
 }
