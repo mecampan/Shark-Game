@@ -4,15 +4,14 @@
 //
 // Shark Game
 //
-// Art assets from Kenny Assets "Shape Characters" set:
-// https://kenney.nl/assets/shape-characters
-//
-// https://sergeant-slash.itch.io/32x32-animated-shark-sprite
-//
-// Art background from OpenGameArt.Org
-// https://opengameart.org/content/industrial-background-2d
-//
+// Sound Attribution:
+// https://freesound.org/people/Jofae/sounds/353067/
+// Creative Commons 0
+// 
 // Music Attribution:
+// "Cruising for Goblins" Kevin MacLeod (incompetech.com)
+// Licensed under Creative Commons: By Attribution 4.0 License
+// http://creativecommons.org/licenses/by/4.0/
 // debug with extreme prejudice
 "use strict"
 
@@ -27,7 +26,7 @@ let config = {
         default: 'arcade',
         arcade: {
             tileBias: 24,
-            debug: true,
+            debug: false,
             gravity: {
                 x: 0,
                 y: 0

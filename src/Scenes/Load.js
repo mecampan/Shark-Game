@@ -10,7 +10,7 @@ class Load extends Phaser.Scene {
         this.load.atlas("platformer_characters", "tilemap-characters-packed.png", "tilemap-characters-packed.json");
 
         // Load background image
-        this.load.image("background", "industrial_background.jpg");
+        this.load.image("background", "skyBackground.png");
 
         // Load individual shark frames
         this.load.image("shark1", "sharkSprite/Shark1.png");
@@ -22,12 +22,20 @@ class Load extends Phaser.Scene {
         this.load.image("shark7", "sharkSprite/Shark7.png");
         this.load.image("shark8", "sharkSprite/Shark8.png");
 
-        this.load.audio("splash1", "splash2.ogg");
-        this.load.audio("splash2", "splash3.ogg");
+        this.load.image("seagull", "seagull.png");
 
+        this.load.audio("backgroundMusic", "cruising_for_goblins.ogg");
+        this.load.audio("splash1", "splash1.ogg");
+        this.load.audio("splash2", "splash2.ogg");
+        this.load.audio("splash3", "splash3.ogg");
+        this.load.audio("snapSound", "snapSound.ogg");
+        this.load.audio("snapSound2", "snapSound2.ogg");
     }
 
     create() {
+        this.backgroundMusic = this.sound.add('backgroundMusic', { loop: true }).setVolume(0.5);
+        this.backgroundMusic.play();
+
         this.anims.create({
             key: 'swim',
             frames: [

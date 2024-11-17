@@ -7,8 +7,10 @@ class Player {
         this.isInvincible = false;
 
         // Sound effects
-        this.splashSound = this.scene.sound.add('splash1');
-        this.splashSound2 = this.scene.sound.add('splash2');
+        this.splashSound = this.scene.sound.add('splash1').setVolume(2.5);;
+        this.splashSound2 = this.scene.sound.add('splash2').setVolume(2.5);;
+        this.splashSound3 = this.scene.sound.add('splash3').setVolume(2.5);;
+        this.snapSound2 = this.scene.sound.add('snapSound2');
 
         // Physics settings
         this.inWaterGravity = 0;
@@ -35,7 +37,7 @@ class Player {
 
     // Water entry/exit
     playerInWater(isTrue) {
-        isTrue ? this.splashSound.play() : this.splashSound2.play();
+        isTrue ? this.splashSound2.play() : this.splashSound3.play();
         this.inWater = isTrue;
         this.sprite.body.setGravityY(isTrue ? this.inWaterGravity : this.outWaterGravity);
         isTrue ? this.sprite.body.setVelocity(this.sprite.body.velocity.x * 0.5, this.sprite.body.velocity.y * 0.7) : 0;
@@ -62,6 +64,10 @@ class Player {
 
     // Invincibility effect with blinking animation
     invincibilityFrame() {
+        if(!this.isInvincible) {
+            this.snapSound2.play();
+        }
+
         this.isInvincible = true;
         let blinkCounter = 0;
         const blinkTimer = this.scene.time.addEvent({

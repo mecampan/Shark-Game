@@ -4,11 +4,12 @@ class MainScene extends Phaser.Scene {
     }
 
     create() {
-        // Set up background
         this.createBackground();
-
-        // Score setup
         this.setupScoreDisplay();
+        this.timerSetUp();
+        this.gameOver = false;
+
+        this.snapSound = this.sound.add('snapSound');
 
         // Instantiate the player
         this.player = new Player(this, 500, 500, "shark1");
@@ -59,7 +60,7 @@ class MainScene extends Phaser.Scene {
     }
 
     createWaterArea() {
-        this.waterArea = this.add.rectangle(0, this.game.config.height + 50, this.game.config.width * 2, this.game.config.height, 0x0000ff)
+        this.waterArea = this.add.rectangle(0, this.game.config.height + 62, this.game.config.width * 2, this.game.config.height, 0x0000ff)
             .setAlpha(0.3)
             .setDepth(1);
         this.physics.add.existing(this.waterArea, true);
@@ -76,7 +77,7 @@ class MainScene extends Phaser.Scene {
             loop: true
         });
 
-        this.maxWaterEnemies = 5;
+        this.maxWaterEnemies = 8;
         this.currentMaxWaterEnemies = 1;
         this.spawnWaterEnemyTimer = this.time.addEvent({
             delay: 7000,
@@ -105,7 +106,8 @@ class MainScene extends Phaser.Scene {
         const x = spawnOnLeft ? -50 : this.game.config.width + 50;
         const y = Phaser.Math.Between(50, this.game.config.height - 350);
 
-        let bird = this.add.rectangle(x, y, 10, 10, 0xffffff);
+        let bird = this.add.sprite(x, y, "seagull").setScale(1).setFlipX(spawnOnLeft ? true : false);
+
         bird.points = 100;
         bird.speed = spawnOnLeft ? Phaser.Math.Between(50, 200) : -Phaser.Math.Between(50, 200);
 
@@ -164,6 +166,7 @@ class MainScene extends Phaser.Scene {
     checkEnemyCollisions() {
         this.enemies = this.enemies.filter(enemy => {
             if (this.collides(this.player.sprite, enemy)) {
+                this.snapSound.play();
                 this.updateScore(enemy.points);
                 enemy.destroy();
 
@@ -183,7 +186,7 @@ class MainScene extends Phaser.Scene {
             let waterEnemy = this.waterEnemies[i];
             if (this.collides(this.player.sprite, waterEnemy)) {
                 if (this.player.sprite.scale > 1) {
-                    this.player.sprite.setScale(this.player.sprite.scale - 0.3);
+                    this.player.sprite.setScale(this.player.sprite.scale - 0.4);
                 }
                 this.player.invincibilityFrame();
                 break;
@@ -212,7 +215,79 @@ class MainScene extends Phaser.Scene {
         });
     }
 
+    // --- Timer Setup ---
+    timerSetUp() {
+        this.remainingTime = 180; // 3 minutes in seconds
+
+        this.timerText = this.add.text(10, 10, `Time: 03:00`, {
+            fontSize: '24px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 3
+        }).setOrigin(0).setDepth(5).setScrollFactor(0);
+
+        this.time.addEvent({
+            delay: 1000, // Every second
+            callback: this.updateTimer,
+            callbackScope: this,
+            loop: true
+        });
+    }
+
+    updateTimer() {
+        if (this.gameOver) return;
+
+        this.remainingTime--;
+        const minutes = Math.floor(this.remainingTime / 60).toString().padStart(2, '0');
+        const seconds = (this.remainingTime % 60).toString().padStart(2, '0');
+        this.timerText.setText(`Time: ${minutes}:${seconds}`);
+
+        if (this.remainingTime <= 0) {
+            this.triggerGameOver();
+        }
+    }
+
+    triggerGameOver() {
+        this.gameOver = true;
+
+        // Stop all enemies
+        this.enemies.forEach(enemy => enemy.destroy());
+        this.waterEnemies.forEach(enemy => enemy.destroy());
+
+        // Display "Game Over"
+        const centerX = this.cameras.main.centerX;
+        const centerY = this.cameras.main.centerY;
+
+        this.add.text(centerX, centerY, "GAME OVER", {
+            fontSize: '48px',
+            fill: '#ff0000',
+            stroke: '#000000',
+            strokeThickness: 6
+        }).setOrigin(0.5).setDepth(10);
+
+        this.add.text(centerX, centerY + 50, `Score: ${this.playerScore}`, {
+            fontSize: '32px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 3
+        }).setOrigin(0.5).setDepth(10);
+
+        this.add.text(centerX, centerY + 100, "Press [Enter] to Restart", {
+            fontSize: '24px',
+            fill: '#ffffff',
+            stroke: '#000000',
+            strokeThickness: 3
+        }).setOrigin(0.5).setDepth(10);
+
+        // Listen for Enter key to restart
+        this.input.keyboard.once('keydown-ENTER', () => {
+            this.scene.restart();
+        });
+    }    
+
     update() {
+        if (this.gameOver) return;
+
         const playerBounds = this.player.sprite.getBounds();
         const waterBounds = this.waterArea.getBounds();
 
