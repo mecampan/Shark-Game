@@ -24,6 +24,9 @@ class Load extends Phaser.Scene {
 
         this.load.image("seagull", "seagull.png");
 
+        this.load.image("jawsTop", "jawsTop.png");
+        this.load.image("jawsBottom", "jawsBottom.png");
+
         this.load.audio("backgroundMusic", "cruising_for_goblins.ogg");
         this.load.audio("splash1", "splash1.ogg");
         this.load.audio("splash2", "splash2.ogg");
@@ -33,7 +36,7 @@ class Load extends Phaser.Scene {
     }
 
     create() {
-        this.backgroundMusic = this.sound.add('backgroundMusic', { loop: true }).setVolume(0.5);
+        this.backgroundMusic = this.sound.add('backgroundMusic', { loop: true }).setVolume(0.1);
         this.backgroundMusic.play();
 
         this.anims.create({

@@ -9,7 +9,11 @@ class MainScene extends Phaser.Scene {
         this.timerSetUp();
         this.gameOver = false;
 
-        this.snapSound = this.sound.add('snapSound');
+        this.snapSound = this.sound.add('snapSound').setVolume(0.5);;
+        this.jawsTop = this.add.image(this.cameras.main.centerX, -240, 'jawsTop').setDepth(0).setAlpha(1.0);
+        this.jawsBottom = this.add.image(this.cameras.main.centerX, this.game.config.height + 120, 'jawsBottom').setDepth(0).setAlpha(1.0);
+
+        this.isJawsEffectPlaying = false;
 
         // Instantiate the player
         this.player = new Player(this, 500, 500, "shark1");
@@ -167,6 +171,7 @@ class MainScene extends Phaser.Scene {
         this.enemies = this.enemies.filter(enemy => {
             if (this.collides(this.player.sprite, enemy)) {
                 this.snapSound.play();
+                this.jawChompEffect();
                 this.updateScore(enemy.points);
                 enemy.destroy();
 
@@ -284,6 +289,58 @@ class MainScene extends Phaser.Scene {
             this.scene.restart();
         });
     }    
+
+
+    jawChompEffect() {
+        if (this.isJawsEffectPlaying) return;
+    
+        this.isJawsEffectPlaying = true;
+    
+        // Set initial positions
+        this.jawsTop.setY(-100).setAlpha(1);
+        this.jawsBottom.setY(this.game.config.height + 100).setAlpha(1);
+    
+        // Snap jaws shut
+        this.tweens.add({
+            targets: this.jawsTop,
+            y: this.cameras.main.centerY - 50,
+            duration: 200,
+            ease: 'Power2'
+        });
+    
+        this.tweens.add({
+            targets: this.jawsBottom,
+            y: this.cameras.main.centerY + 50,
+            duration: 200,
+            ease: 'Power2',
+            onComplete: () => {
+                // Open jaws slightly
+                this.tweens.add({
+                    targets: [this.jawsTop, this.jawsBottom],
+                    y: {
+                        from: [this.cameras.main.centerY - 50, this.cameras.main.centerY + 50],
+                        to: [this.cameras.main.centerY - 100, this.cameras.main.centerY + 100],
+                    },
+                    duration: 300,
+                    ease: 'Power2',
+                    onComplete: () => {
+                        // Fade jaws out
+                        this.tweens.add({
+                            targets: [this.jawsTop, this.jawsBottom],
+                            alpha: 0,
+                            duration: 300,
+                            ease: 'Power2',
+                            onComplete: () => {
+                                // Reset the flag when the effect finishes
+                                this.isJawsEffectPlaying = false;
+                            }
+                        });
+                    }
+                });
+            }
+        });
+    }
+    
 
     update() {
         if (this.gameOver) return;

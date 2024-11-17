@@ -7,10 +7,10 @@ class Player {
         this.isInvincible = false;
 
         // Sound effects
-        this.splashSound = this.scene.sound.add('splash1').setVolume(2.5);;
-        this.splashSound2 = this.scene.sound.add('splash2').setVolume(2.5);;
-        this.splashSound3 = this.scene.sound.add('splash3').setVolume(2.5);;
-        this.snapSound2 = this.scene.sound.add('snapSound2');
+        this.splashSound = this.scene.sound.add('splash1').setVolume(1.5);;
+        this.splashSound2 = this.scene.sound.add('splash2').setVolume(1.5);;
+        this.splashSound3 = this.scene.sound.add('splash3').setVolume(1.5);;
+        this.snapSound2 = this.scene.sound.add('snapSound2').setVolume(0.5);;
 
         // Physics settings
         this.inWaterGravity = 0;
@@ -65,6 +65,7 @@ class Player {
     // Invincibility effect with blinking animation
     invincibilityFrame() {
         if(!this.isInvincible) {
+            this.scene.jawChompEffect();
             this.snapSound2.play();
         }
 
